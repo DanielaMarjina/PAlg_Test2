@@ -96,29 +96,76 @@ public class LCS {
         LCS(a,a2);
     }
 
-    public static void citireFisier3(Scanner scanner){
+    public static void citireFisier3(Scanner scanner) throws IOException {
         while (scanner.hasNext()){
             int t= scanner.nextInt();
-            List<List<String>> cities=new ArrayList<>();
             while(t!=0){
                 int n= scanner.nextInt();
                 scanner.nextLine();
-                for(int i=0;i<n;i++){
-                    String linie=scanner.nextLine();
-                    String[] parts=linie.split(" ");
-                    List<String> list=new ArrayList<>(Arrays.asList(parts));
-                    cities.add(list);
+                List<List<String>> cities=new ArrayList<>();
+                for (int i = 0; i < n; i++) {
+                    String linie = scanner.nextLine();
+                    cities.add(Arrays.asList(linie.split(" ")));
                 }
+                solve(cities);
                 t--;
             }
-            solve(cities);
         }
     }
 
-    public static void solve(List<List<String>> cities){
-        List<String> sol=cities.get(0);
-        //System.out.println(sol);
+    public static void solve(List<List<String>> cities) throws IOException {
 
+        List<String> sol = cities.get(0);
+
+        for (int i = 1; i < cities.size(); i++) {
+            sol = LCSExcursii(sol, cities.get(i));  ///ASTA E IMPOPRTANT
+        }
+
+        FileWriter fileWriter = new FileWriter("output_lcsExcursii.txt", true);
+        fileWriter.write(sol.size() + "\n");
+        fileWriter.close();
+    }
+
+    public static List<String> LCSExcursii(List<String> a, List<String> b) {
+
+        int n = a.size();
+        int m = b.size();
+
+        int[][] lung = new int[n][m];
+
+        lung[0][0] = (a.get(0).equals(b.get(0))) ? 1 : 0;
+
+        for (int i = 1; i < n; i++)
+            lung[i][0] = (a.get(i).equals(b.get(0))) ? 1 : lung[i-1][0];
+
+        for (int j = 1; j < m; j++)
+            lung[0][j] = (a.get(0).equals(b.get(j))) ? 1 : lung[0][j-1];
+
+        for (int i = 1; i < n; i++) {
+            for (int j = 1; j < m; j++) {
+                if (a.get(i).equals(b.get(j)))
+                    lung[i][j] = lung[i-1][j-1] + 1;  //asta e diferenta
+                else
+                    lung[i][j] = Math.max(lung[i-1][j], lung[i][j-1]); //asta tot
+            }
+        }
+
+        List<String> orase = new ArrayList<>();
+        int i = n - 1, j = m - 1;
+
+        while (i >= 0 && j >= 0) {
+            if (a.get(i).equals(b.get(j))) {
+                orase.add(a.get(i));
+                i--; j--;
+            } else if (i > 0 && lung[i-1][j] == lung[i][j]) {
+                i--;
+            } else {
+                j--;
+            }
+        }
+
+        Collections.reverse(orase);
+        return orase;
     }
 
 

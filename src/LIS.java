@@ -222,7 +222,8 @@ public class LIS{
 
         for(int i=0;i<n;i++){
             for(int j=i+1;j<n;j++){
-                if(greutate[i]>greutate[j]){
+                if (greutate[i] > greutate[j] ||
+                        (greutate[i] == greutate[j] && inteligenta[i] < inteligenta[j])){
                     int temp=greutate[i];
                     greutate[i]=greutate[j];
                     greutate[j]=temp;
@@ -241,7 +242,7 @@ public class LIS{
         for(int i=n-2;i>=0;i--){
             int max=0;
             for(int j=i+1;j<n;j++){
-                if(inteligenta[i]>inteligenta[j]){
+                if(inteligenta[i]>=inteligenta[j] && greutate[i]<=greutate[j]){
                     if(max<lung[j]) {
                         max = lung[j];
                     }
